@@ -1,0 +1,263 @@
+[gd_scene load_steps=29 format=2]
+
+[ext_resource path="res://Assets/Images/LV01_WindowLight.png" type="Texture" id=1]
+[ext_resource path="res://Light2D.gd" type="Script" id=2]
+[ext_resource path="res://Enemy.gd" type="Script" id=3]
+[ext_resource path="res://Assets/Images/Player/Attack/Attack_00.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/Player/Idle/Idle_00.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_00.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_01.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_02.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_03.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_04.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_05.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_06.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_07.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Images/Player/Shadow_00.png" type="Texture" id=14]
+[ext_resource path="res://Area2D.gd" type="Script" id=15]
+[ext_resource path="res://Assets/Images/Background/LV01_Wall_01.png" type="Texture" id=16]
+[ext_resource path="res://Assets/Images/Background/LV01_Wall_00.png" type="Texture" id=17]
+[ext_resource path="res://Assets/Images/Background/LV01_WallDivide_00.png" type="Texture" id=18]
+[ext_resource path="res://Assets/Images/Background/LV01_Floor_00.png" type="Texture" id=19]
+[ext_resource path="res://Assets/Images/LV01_Bed.png" type="Texture" id=20]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=21]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": false,
+"name": "Idle",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 13 ) ],
+"loop": true,
+"name": "Walk",
+"speed": 10.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 12, 6 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 6.5, 7.5 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 10, 20.5 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 4.5, 2.5 )
+
+[sub_resource type="OccluderPolygon2D" id=6]
+polygon = PoolVector2Array( 2.62932, -160.819, 2.62932, -127.893, 0.814644, -118.564, 0.768112, -105.12, 4.25788, -104.845, 6.30521, -97.9859, 5.88644, 2.43683, 4.81624, 7.10126, -7.04896, 7.10126, -8.53792, 3.80872, -8.72405, -94.9677, -6.07183, -104.571, -3.32654, -105.668, -3.41961, -122.68, -4.39674, -131.735, -4.21062, -160.544 )
+
+[sub_resource type="OccluderPolygon2D" id=7]
+polygon = PoolVector2Array( -38.3797, -9.16969, 46.2035, -7.88809, 49.3362, 1.36765, 38.3717, 11.7626, -49.7714, 12.0473, -49.629, 4.78516, -47.3506, 4.35796 )
+
+[node name="World" type="Node"]
+
+[node name="WindowLight" type="Sprite" parent="."]
+editor/display_folded = true
+modulate = Color( 0.517647, 0.517647, 0.517647, 1 )
+position = Vector2( 150, 125 )
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
+
+[node name="Light2D" type="Light2D" parent="WindowLight"]
+position = Vector2( 0, -82.3223 )
+z_index = -1
+texture = ExtResource( 1 )
+offset = Vector2( 0, 82.3223 )
+color = Color( 0, 0, 1, 1 )
+energy = 1.2
+mode = 2
+shadow_enabled = true
+shadow_gradient_length = 15.0
+script = ExtResource( 2 )
+
+[node name="Timer" type="Timer" parent="WindowLight/Light2D"]
+wait_time = 0.75
+autostart = true
+
+[node name="Enemy" type="KinematicBody2D" parent="."]
+editor/display_folded = true
+position = Vector2( 879.517, 174 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
+
+[node name="Animator" type="AnimatedSprite" parent="Enemy"]
+frames = SubResource( 1 )
+animation = "Idle"
+playing = true
+
+[node name="Feet_Collision" type="CollisionShape2D" parent="Enemy"]
+position = Vector2( 1, 45 )
+shape = SubResource( 2 )
+
+[node name="Damage_Collision" type="Area2D" parent="Enemy"]
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Head_Collision" type="CollisionShape2D" parent="Enemy/Damage_Collision"]
+position = Vector2( 0.5, -37.5 )
+shape = SubResource( 3 )
+
+[node name="Torso_Collision" type="CollisionShape2D" parent="Enemy/Damage_Collision"]
+position = Vector2( 0, -9.5 )
+shape = SubResource( 4 )
+
+[node name="Attack_Collision" type="Area2D" parent="Enemy"]
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Attack_Collision" type="CollisionShape2D" parent="Enemy/Attack_Collision"]
+position = Vector2( 32.5, -22.5 )
+shape = SubResource( 5 )
+disabled = true
+
+[node name="stall_timer" type="Timer" parent="Enemy"]
+wait_time = 0.2
+one_shot = true
+
+[node name="VisibilityNotifier" type="VisibilityNotifier2D" parent="Enemy"]
+
+[node name="LightOccluder2D2" type="LightOccluder2D" parent="Enemy"]
+position = Vector2( 2.5, 0 )
+scale = Vector2( 1.65365, 0.280432 )
+occluder = SubResource( 6 )
+
+[node name="Shadow2" type="Sprite" parent="Enemy"]
+position = Vector2( -0.736511, 48.6812 )
+z_index = -1
+texture = ExtResource( 14 )
+
+[node name="Floor_Collision" type="StaticBody2D" parent="."]
+editor/display_folded = true
+visible = false
+position = Vector2( 80, 30 )
+script = ExtResource( 15 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Floor_Collision"]
+position = Vector2( -50, 20 )
+build_mode = 1
+polygon = PoolVector2Array( -30, 122.381, 75.631, 122.197, 86.8566, 100.114, 270, 100, 270.013, 118.027, 279.996, 118.022, 279.982, 100.004, 879.989, 100.004, 880.083, 199.998, 280.016, 199.984, 280.028, 182.222, 270.016, 182.211, 270.02, 199.995, -29.9983, 199.983 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Walls" type="Node" parent="."]
+editor/display_folded = true
+
+[node name="Wall" type="Sprite" parent="Walls"]
+modulate = Color( 0.215686, 0.164706, 0.129412, 1 )
+z_index = -1
+texture = ExtResource( 16 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Wall2" type="Sprite" parent="Walls"]
+position = Vector2( 310, 0 )
+z_index = -1
+texture = ExtResource( 17 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Wall3" type="Sprite" parent="Walls"]
+position = Vector2( 610, 0 )
+z_index = -1
+texture = ExtResource( 17 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Wall_Divide" type="Sprite" parent="Walls"]
+position = Vector2( 300, 0 )
+z_index = 4096
+texture = ExtResource( 18 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Wall_Divide2" type="Sprite" parent="Walls"]
+position = Vector2( -9.99503, 0 )
+z_index = 4096
+texture = ExtResource( 18 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Wall_Divide3" type="Sprite" parent="Walls"]
+position = Vector2( 910, 0 )
+z_index = 4096
+texture = ExtResource( 18 )
+centered = false
+
+[node name="Floors" type="Node" parent="."]
+editor/display_folded = true
+
+[node name="Floor" type="Sprite" parent="Floors"]
+modulate = Color( 0.152941, 0.0901961, 0.0509804, 1 )
+position = Vector2( 0, 150 )
+z_index = -1
+texture = ExtResource( 19 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Floor2" type="Sprite" parent="Floors"]
+position = Vector2( 310, 150 )
+z_index = -1
+texture = ExtResource( 19 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Floor3" type="Sprite" parent="Floors"]
+position = Vector2( 610, 150 )
+z_index = -1
+texture = ExtResource( 19 )
+centered = false
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Bed" type="Sprite" parent="."]
+editor/display_folded = true
+position = Vector2( 67.0482, 134.892 )
+texture = ExtResource( 20 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="Bed"]
+occluder = SubResource( 7 )
+
+[node name="Player" parent="." instance=ExtResource( 21 )]
+[connection signal="timeout" from="WindowLight/Light2D/Timer" to="WindowLight/Light2D" method="_on_Timer_timeout"]
+[connection signal="area_entered" from="Enemy/Damage_Collision" to="Enemy" method="_on_Damage_Collision_area_entered"]

@@ -1,0 +1,115 @@
+[gd_scene load_steps=19 format=2]
+
+[ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Images/Player/Attack/Attack_00.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_00.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_01.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_02.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_03.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_04.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_05.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_06.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Images/Player/Walk/Walk_07.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Images/Player/Idle/Idle_00.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Images/Player/Shadow_00.png" type="Texture" id=12]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "Walk",
+"speed": 10.0
+}, {
+"frames": [ ExtResource( 11 ) ],
+"loop": false,
+"name": "Idle",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 12, 6 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 6.5, 7.5 )
+
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 10, 20.5 )
+
+[sub_resource type="CircleShape2D" id=5]
+
+[sub_resource type="OccluderPolygon2D" id=6]
+polygon = PoolVector2Array( 2.62932, -160.819, 2.62932, -127.893, 0.814644, -118.564, 0.768112, -105.12, 4.25788, -104.845, 6.30521, -97.9859, 5.88644, 2.43683, 4.81624, 7.10126, -7.04896, 7.10126, -8.53792, 3.80872, -8.72405, -94.9677, -6.07183, -104.571, -3.32654, -105.668, -3.41961, -122.68, -4.39674, -131.735, -4.21062, -160.544 )
+
+[node name="Player" type="KinematicBody2D"]
+position = Vector2( 72.9679, 183.95 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2( 0, -50 )
+current = true
+zoom = Vector2( 0.55, 0.55 )
+drag_margin_top = 0.25
+drag_margin_right = 0.25
+
+[node name="Animator" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "Attack"
+playing = true
+
+[node name="Feet_Collision" type="CollisionShape2D" parent="."]
+position = Vector2( 1, 45 )
+shape = SubResource( 2 )
+
+[node name="Damage_Collision" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Head_Collision" type="CollisionShape2D" parent="Damage_Collision"]
+position = Vector2( 0.5, -37.5 )
+shape = SubResource( 3 )
+
+[node name="Torso_Collision" type="CollisionShape2D" parent="Damage_Collision"]
+position = Vector2( 0, -9.5 )
+shape = SubResource( 4 )
+
+[node name="Attack_Collision" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Attack_Collision" type="CollisionShape2D" parent="Attack_Collision"]
+position = Vector2( 30, -17 )
+shape = SubResource( 5 )
+disabled = true
+
+[node name="stall_timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2( 2, 0 )
+scale = Vector2( 1.65365, 0.280432 )
+occluder = SubResource( 6 )
+
+[node name="Shadow" type="Sprite" parent="."]
+position = Vector2( 1, 48.755 )
+z_index = -1
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_lock_": true
+}
+[connection signal="area_entered" from="Damage_Collision" to="." method="_on_Damage_Collision_area_entered"]
